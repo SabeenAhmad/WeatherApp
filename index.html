@@ -9,14 +9,14 @@
 <body>
     <div class = "CityContainer">
         <label for="search">Enter City Name:</label>
-        <input type="text" id = "city" placeholder="City Name">
+        <input type="text" class = "search" id = "city" placeholder="City Name">
         <button><img src = "images/search.png"> </button>
     </div>
     <div class = "weather">
         <h1 class = "city"> Lawrence, Kansas</h1>
         <div class = "topline">
             <img src = "images/rain.png" class = "weatherPic">
-            <h2 class = "temp">70°</h1>
+            <h2 class = "temp"></h1>
 
         </div>
     
@@ -24,7 +24,7 @@
             <div class = "row">
                 <img src="images/humidity.png">
                 <div>
-                    <p class=" humidity">Humidity <br><br>10%</p>
+                    <p class="humidity">Humidity <br><br>10%</p>
                 </div>
             </div> 
             <div class = "row">
@@ -34,10 +34,50 @@
                 </div>
             </div>
         </div>
-
-
-
-
     </div>
+<script>
+    const APIkey ="8075c49bc7557dfde1504fe55e116f93";
+    const APIurl = "https://api.openweathermap.org/data/2.5/weather?units=imperial&q=";
+    const searchBox = document.querySelector("#city");
+    const searchButton = document.querySelector(".CityContainer button");
+    const weatherIcon = document.querySelector(".weatherPic");
+    async function checkWeather(cityName){
+        const response = await fetch(APIurl + cityName + `&appid=${APIkey}`);
+        var data = await response.json();
+        console.log(data);
+        var roundedTemp = Math.round(data.main.temp);
+        var roundedWind = Math.round(data.wind.speed);
+        var Picweather = data.weather[0].main;
+        console.log(Picweather);
+        document.querySelector(".city").innerHTML = data.name;
+        document.querySelector(".temp").innerHTML = `${roundedTemp}` + '°F';
+        document.querySelector(".humidity").innerHTML = 'Humidity <br>' + data.main.humidity;
+        document.querySelector(".wind").innerHTML = 'Wind <br>' + `${roundedWind} mph`;
+        switch(Picweather){
+            case 'Clear':
+                weatherIcon.src = 'images/clear.png';
+                break;
+            case 'Clouds':
+                weatherIcon.src = 'images/clouds.png';
+                break;
+            case 'Rain':
+                weatherIcon.src = 'images/rain.png';
+                break;
+            case 'Drizzle':
+                weatherIcon.src = 'images/drizzle.png';
+                break;
+            case 'Mist':
+                weatherIcon.src = 'images/mist.png';
+                break;
+        }
+
+    }
+
+    searchButton.addEventListener("click", ()=>{
+        checkWeather(searchBox.value);
+    })
+
+
+</script>
 </body>
 </html>
